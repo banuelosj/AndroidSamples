@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private MapView mapview;
     private Button btnCache;
     private UserCredential storedCred;
+    private Boolean isStored = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // create a UserCredential Object from the username and password of the SharedPreferences file
                 storedCred = new UserCredential(usernameStr, passwordStr);
+                isStored = true;
                 displayLayer(storedCred);
             } catch (Exception ex ) {
                 Log.i(TAG, "Failed to obtain sharedPreferences: " + ex.getMessage());
@@ -164,9 +166,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override protected void onResume() {
+        Log.i(TAG, "resumming....");
         // call get creds once redirected back to the MainActivity
         // from the LoginActivity
-        getCreds();
+        if(!isStored) {
+            // only gets called if the credentials are not already stored
+            getCreds();
+        }
         mapview.resume();
         super.onResume();
     }
